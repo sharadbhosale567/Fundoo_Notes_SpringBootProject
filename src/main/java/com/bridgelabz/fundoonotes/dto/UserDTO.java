@@ -16,7 +16,8 @@ public class UserDTO {
     private String lastName;
     private String emailId;
     private String password;
-    private String mobileNumber;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dob;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate registerDate = LocalDate.now();
     @JsonFormat(pattern = "dd-MM-yyyy")

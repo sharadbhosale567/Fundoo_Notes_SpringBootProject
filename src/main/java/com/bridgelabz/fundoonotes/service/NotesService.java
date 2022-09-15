@@ -30,7 +30,7 @@ public class NotesService implements INotesService{
     }
 
     @Override
-    public ResponseDTO getAllNotes(NotesDTO notesDTO) {
+    public ResponseDTO getAllNotes() {
         return new ResponseDTO("Get all notes",notesRepository.findAll());
     }
 
