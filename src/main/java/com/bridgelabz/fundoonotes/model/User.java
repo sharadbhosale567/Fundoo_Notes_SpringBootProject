@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -16,36 +13,46 @@ import java.util.List;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     private String firstName;
-    private String lastName;
-    private String emailId;
+    private  String lastname;
+    private String email;
     private String password;
-    private LocalDate dob;
-    private LocalDate registerDate;
-    private LocalDate updatedDate;
+    private String address;
+    private  String username;
+    private String token;
+    private boolean verify = false;
+    @Column(columnDefinition = "boolean default false")
+    private boolean isVerified;
 
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Notes>  notesList = new ArrayList<>();
-
-    public void createUser(UserDTO userDTO) {
-        this.firstName = userDTO.getFirstName();
-        this.lastName = userDTO.getLastName();
-        this.emailId = userDTO.getEmailId();
-        this.password = userDTO.getPassword();
-        this.dob = userDTO.getDob();
-        this.registerDate = userDTO.getRegisterDate();
+    public User(UserDTO userDTO){
+        this.firstName=userDTO.firstName;
+        this.lastname=userDTO.lastName;
+        this.email=userDTO.email;
+        this.password=userDTO.password;
+        this.address=userDTO.address;
+        this.username=userDTO.username;
     }
 
-    public void updateUser(UserDTO userDTO) {
-        this.firstName = userDTO.getFirstName();
-        this.lastName = userDTO.getLastName();
-        this.emailId = userDTO.getEmailId();
-        this.password = userDTO.getPassword();
-        this.dob = userDTO.getDob();
-        this.registerDate = userDTO.getRegisterDate();
-        this.updatedDate = userDTO.getUpdatedDate();
+    public User(int id,UserDTO userDTO){
+        this.id=id;
+        this.firstName=userDTO.firstName;
+        this.lastname=userDTO.lastName;
+        this.email=userDTO.email;
+        this.password=userDTO.password;
+        this.address=userDTO.address;
+        this.username=userDTO.username;
     }
+
+
+//    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+//    private List<Notes>  notesList = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+//    private List<Label> labelList = new ArrayList<>();
+
+//    public User(String email, String user_is_registered, String s) {
+//    }
 }

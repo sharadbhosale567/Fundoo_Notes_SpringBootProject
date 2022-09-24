@@ -1,14 +1,27 @@
 package com.bridgelabz.fundoonotes.service;
 
-import com.bridgelabz.fundoonotes.dto.ResponseDTO;
+import com.bridgelabz.fundoonotes.dto.LoginDTO;
 import com.bridgelabz.fundoonotes.dto.UserDTO;
+import com.bridgelabz.fundoonotes.model.User;
+
+import java.util.List;
 
 public interface IUserService {
 
-    public ResponseDTO registerUser(UserDTO userDTO);
-    public ResponseDTO getAllUsers();
-    public ResponseDTO UpdateUserData(int id, UserDTO userDTO);
-    public ResponseDTO deleteUserDataById(int id);
-    public ResponseDTO getUserById(int id);
 
+    List<User> getUserData();
+
+    User getUserDataById(String token);
+
+    User register(UserDTO userDTO);
+
+    User login(LoginDTO loginDTO);
+
+    User verify(String token);
+
+    User updateUserData(String token, UserDTO userDTO);
+
+    String deleteUserData(String token);
+
+    String Search(LoginDTO loginDTO);
 }

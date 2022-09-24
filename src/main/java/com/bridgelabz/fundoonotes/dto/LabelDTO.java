@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotesDTO {
+public class LabelDTO {
 
-    private String title;
-    private String description;
-    private boolean isArchived;
-    private boolean isDeleted;;
+    private String labelTitle;
 }

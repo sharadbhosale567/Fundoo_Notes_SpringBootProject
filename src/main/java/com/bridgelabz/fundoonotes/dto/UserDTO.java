@@ -12,14 +12,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserDTO {
 
-    private String firstName;
-    private String lastName;
-    private String emailId;
-    private String password;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate dob;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate registerDate = LocalDate.now();
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate updatedDate = LocalDate.now();
+    public String firstName;
+    public  String lastName;
+    public String email;
+    public String password;
+    public String address;
+    public String username;
 }

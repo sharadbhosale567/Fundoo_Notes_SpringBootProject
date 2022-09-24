@@ -1,14 +1,29 @@
 package com.bridgelabz.fundoonotes.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class ResponseDTO {
-
+    private int status;
     private String message;
     private Object data;
+
+    public ResponseDTO(String message,int status) {
+        this.message = message;
+        this.status = status;
+    }
+
+    public ResponseDTO(int status, String message, Object data) {
+        super();
+        this.status = status;
+        this.message = message;
+        this.data = data;
+    }
+
+    public ResponseDTO(String message, Object data) {
+        this.message = message;
+        this.data = data;
+    }
 }
