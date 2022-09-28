@@ -5,9 +5,12 @@ import com.bridgelabz.fundoonotes.dto.UserDTO;
 import com.bridgelabz.fundoonotes.exception.GlobalException;
 import com.bridgelabz.fundoonotes.model.Notes;
 import com.bridgelabz.fundoonotes.model.User;
+import com.bridgelabz.fundoonotes.rabbitmq.RabbitMQSender;
 import com.bridgelabz.fundoonotes.repository.UserRepository;
 import com.bridgelabz.fundoonotes.util.EmailService;
+import com.bridgelabz.fundoonotes.util.MailObject;
 import com.bridgelabz.fundoonotes.util.TokenUtil;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +22,19 @@ import static java.util.regex.Pattern.matches;
 @Service
 public class UserService implements IUserService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    TokenUtil tokenUtil;
+    private TokenUtil tokenUtil;
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
+    @Autowired
+    private RabbitMQSender rabbitMQSender;
+
+    @Autowired
+    private MailObject mailObject;
+
+    @Autowired
+    private RabbitTemplate template;
 
     @Override
     public List<User> getUserData() {
@@ -43,9 +54,15 @@ public class UserService implements IUserService {
         userRepository.save(userData);
         String token = tokenUtil.createToken(userData.getId());
         userData.setToken(token);
-        String user = emailService.getLink(token);
-        emailService.sendEmail(token);
-        emailService.getLink(userDTO.email);
+        mailObject.setEmail(userData.getEmail());
+        mailObject.setMessage("registration Verification link" +token );
+        mailObject.setSubject("Verification");
+
+        rabbitMQSender.send(mailObject);
+//        String user = emailService.getLink(token);
+//        emailService.sendEmail(token);
+//        emailService.getLink(userDTO.email);
+
         return userRepository.save(userData);
     }
 
@@ -80,7 +97,7 @@ public class UserService implements IUserService {
     public User updateUserData(String token, UserDTO userDTO){
         long userId = tokenUtil.decodeToken(token);
         Optional<User> user = userRepository.findById(userId);
-        if (userRepository.findById(userId).isPresent()){
+        if (user.isPresent()){
             User user1 = new User(userDTO);
             userRepository.save(user1);
             return user1;
@@ -104,7 +121,7 @@ public class UserService implements IUserService {
         User userDetails = userRepository.findByEmail(loginDTO.getEmail());
         if(userDetails != null)
         {
-            throw new GlobalException(" Book  Store with User "+ loginDTO.getEmail() + " not found!");
+            throw new GlobalException( loginDTO.getEmail() + " not found!");
         }
         return "USer Logged in Successfully";
     }

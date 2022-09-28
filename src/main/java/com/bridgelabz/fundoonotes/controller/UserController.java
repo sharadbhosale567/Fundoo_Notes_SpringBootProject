@@ -4,6 +4,7 @@ import com.bridgelabz.fundoonotes.dto.LoginDTO;
 import com.bridgelabz.fundoonotes.dto.ResponseDTO;
 import com.bridgelabz.fundoonotes.dto.UserDTO;
 import com.bridgelabz.fundoonotes.model.User;
+import com.bridgelabz.fundoonotes.rabbitmq.MessageProducer;
 import com.bridgelabz.fundoonotes.service.IUserService;
 import com.bridgelabz.fundoonotes.util.EmailService;
 import com.bridgelabz.fundoonotes.util.TokenUtil;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(allowedHeaders = "*", origins = "*", exposedHeaders = { "jwtToken" })
 public class UserController {
     @Autowired
     IUserService iUserService;
@@ -25,6 +25,9 @@ public class UserController {
     TokenUtil tokenUtil;
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    MessageProducer messageProducer;
 
     List<User> userList= new ArrayList<>();
 
@@ -39,8 +42,9 @@ public class UserController {
     public ResponseEntity<ResponseDTO> createUserData(@RequestBody UserDTO userDTO) {
         User user = iUserService.register(userDTO);
         if (user != null) {
-
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(200, "registration successfull", user));
+            String token = null;
+            messageProducer.sendMessage(emailService.sendEmail(token));
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(200, "registration successfull", user + token));
         } else {
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body(new ResponseDTO(208, "user already exist", userDTO));
